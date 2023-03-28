@@ -4,6 +4,8 @@ const ApiError = require('../errors/ApiError')
 const EmailAlreadyTakenError = require('../errors/EmailAlreadyTakenError')
 const EmailNotRegisteredError = require('../errors/EmailNotRegisteredError')
 const ApplicationController = require('./ApplicationController')
+const { NotFoundError } = require('../errors')
+const imageKit = require('../lib/imageKitConfig')
 
 class AuthenticationController extends ApplicationController {
   constructor({ userModel, roleModel, bcrypt, jwt }) {
@@ -128,6 +130,110 @@ class AuthenticationController extends ApplicationController {
     })
   }
 
+  handleUpdateUser = async (req, res) => {
+    try {
+      const { username, gender, dateOfBirth, photoProfile } = req.body
+
+      const user = await this.getUserFromRequest(req)
+
+      if (req.file != null) {
+        const imageName = req.file.originalname
+        //upload file
+        const img = await imageKit.upload({
+          file: req.file.buffer,
+          fileName: imageName,
+        })
+
+        await user.update({
+          username,
+          gender,
+          dateOfBirth,
+          photoProfile: img.url,
+        })
+
+        res.status(200).json({
+          status: 'success',
+          message: 'user updated successfully',
+          data: {
+            username,
+            gender,
+            dateOfBirth,
+            photoProfile: img.url,
+          },
+        })
+      } else {
+        await user.update({
+          username,
+          gender,
+          dateOfBirth,
+          photoProfile,
+        })
+
+        res.status(200).json({
+          status: 'success',
+          message: 'user updated successfully',
+          data: {
+            username,
+            gender,
+            dateOfBirth,
+            photoProfile,
+          },
+        })
+      }
+    } catch (err) {
+      res.status(422).json({
+        error: {
+          name: err.name,
+          message: err.message,
+        },
+      })
+    }
+  }
+
+  handleGetUser = async () => {
+    const user = await this.userModel.findByPK(req.user.id)
+
+    if (!user) {
+      const err = new NotFoundError(req.user.name)
+      res.status(404).json(err)
+      return
+    }
+
+    const role = await this.roleModel.findByPK(user.roleId)
+
+    if (!role) {
+      const err = new NotFoundError(req.user.name)
+      res.status(404).json(err)
+      return
+    }
+
+    res.status(200).json({
+      status: 'success',
+      message: 'get user data successful',
+      data: user,
+    })
+  }
+
+  handleGetUserById = async (req, res) => {
+    const user = await this.getUserFromRequest(req)
+
+    res.status(200).json({
+      status: 'success',
+      message: 'get user by id successful',
+      data: user,
+    })
+  }
+
+  handleListUser = async (req, res) => {
+    const users = await this.userModel.findAll()
+
+    res.status(200).json({
+      status: 'success',
+      message: 'get users list successfull',
+      data: users,
+    })
+  }
+
   createTokenFromUser = (user, role) => {
     return this.jwt.sign(
       {
@@ -150,6 +256,10 @@ class AuthenticationController extends ApplicationController {
 
   verifyPassword = (password, encryptedPassword) => {
     return this.bcrypt.compareSync(password, encryptedPassword)
+  }
+
+  getUserFromRequest(req) {
+    return this.userModel.findByPk(req.params.id)
   }
 }
 

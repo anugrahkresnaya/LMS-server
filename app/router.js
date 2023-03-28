@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const uploader = require('./middleware/uploader')
 const {
   ApplicationController,
   AuthenticationController,
@@ -25,6 +26,13 @@ function apply(app) {
 
   app.post('/register', authenticationController.handleRegister)
   app.post('/login', authenticationController.handleLogin)
+
+  app.get('/user/list', authenticationController.handleListUser)
+  app.put(
+    '/user/update/:id',
+    uploader.single('photoProfile'),
+    authenticationController.handleUpdateUser
+  )
 
   return app
 }
