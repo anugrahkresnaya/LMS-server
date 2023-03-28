@@ -18,6 +18,15 @@ module.exports = {
       encryptedPassword: {
         type: Sequelize.STRING
       },
+      gender: {
+        type: Sequelize.STRING
+      },
+      photoProfile: {
+        type: Sequelize.STRING
+      },
+      dateOfBirth: {
+        type: Sequelize.DATE
+      },
       roleId: {
         type: Sequelize.INTEGER
       },
