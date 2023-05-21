@@ -33,6 +33,8 @@ function apply(app) {
     uploader.single('photoProfile'),
     authenticationController.handleUpdateUser
   )
+  app.get('/user', authenticationController.handleGetUser)
+  app.get('/user/:id', authenticationController.handleGetUserById)
 
   return app
 }
