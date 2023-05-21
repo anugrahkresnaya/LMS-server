@@ -190,8 +190,8 @@ class AuthenticationController extends ApplicationController {
     }
   }
 
-  handleGetUser = async () => {
-    const user = await this.userModel.findByPK(req.user.id)
+  handleGetUser = async (req, res) => {
+    const user = await this.userModel.findByPk(req.user.id)
 
     if (!user) {
       const err = new NotFoundError(req.user.name)
@@ -199,7 +199,7 @@ class AuthenticationController extends ApplicationController {
       return
     }
 
-    const role = await this.roleModel.findByPK(user.roleId)
+    const role = await this.roleModel.findByPk(user.roleId)
 
     if (!role) {
       const err = new NotFoundError(req.user.name)
@@ -215,13 +215,22 @@ class AuthenticationController extends ApplicationController {
   }
 
   handleGetUserById = async (req, res) => {
-    const user = await this.getUserFromRequest(req)
+    try {
+      const user = await this.getUserFromRequest(req)
 
-    res.status(200).json({
-      status: 'success',
-      message: 'get user by id successful',
-      data: user,
-    })
+      res.status(200).json({
+        status: 'success',
+        message: 'get user by id successful',
+        data: [user],
+      })
+    } catch (err) {
+      res.status(422).json({
+        error: {
+          name: err.name,
+          message: err.message,
+        },
+      })
+    }
   }
 
   handleListUser = async (req, res) => {
