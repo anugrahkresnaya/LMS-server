@@ -26,7 +26,7 @@ function apply(app) {
 
   app.post('/register', authenticationController.handleRegister)
   app.post('/login', authenticationController.handleLogin)
-  app.post('/logout', authenticationController.handleLogout)
+  app.get('/logout', authenticationController.handleLogout)
 
   app.get('/user/list', authenticationController.handleListUser)
   app.put(
