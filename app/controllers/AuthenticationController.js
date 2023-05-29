@@ -59,7 +59,7 @@ class AuthenticationController extends ApplicationController {
       console.log('accessToken nih: ', accessToken)
 
       res.cookie("token", accessToken, {
-        httpOnly: false,
+        httpOnly: true,
         // secure: true, // only works on https
       })
 
