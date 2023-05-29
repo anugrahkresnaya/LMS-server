@@ -56,6 +56,13 @@ class AuthenticationController extends ApplicationController {
 
       const accessToken = this.createTokenFromUser(user, user.Role)
 
+      console.log('accessToken nih: ', accessToken)
+
+      res.cookie("token", accessToken, {
+        httpOnly: false,
+        // secure: true, // only works on https
+      })
+
       res.status(200).json({
         status: 'OK',
         message: 'Login Successful',
@@ -67,6 +74,18 @@ class AuthenticationController extends ApplicationController {
       res.status(400).json({
         status: 'FAIL',
         message: err.message,
+      })
+    }
+  }
+
+  handleLogout = async (req, res) => {
+    try {
+      res.clearCookie("token")
+      res.status(200).json({ message: "signout success" })
+    } catch (error) {
+      res.status(400).json({
+        status: 'FAIL',
+        message: error.message,
       })
     }
   }
@@ -255,7 +274,10 @@ class AuthenticationController extends ApplicationController {
           name: role.name,
         },
       },
-      JWT_SIGNATURE_KEY
+      JWT_SIGNATURE_KEY,
+      {
+        expiresIn: "7d",
+      }
     )
   }
 
