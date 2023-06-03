@@ -29,7 +29,8 @@ module.exports = {
       'Users',
       [
         {
-          username: 'admin',
+          firstName: 'admin',
+          lastName: '',
           email: 'adminlms@gmail.com',
           encryptedPassword,
           roleId: role.id,
