@@ -151,7 +151,7 @@ class AuthenticationController extends ApplicationController {
 
   handleUpdateUser = async (req, res) => {
     try {
-      const { username, gender, dateOfBirth, photoProfile } = req.body
+      const { firstName, lastName, gender, dateOfBirth, photoProfile } = req.body
 
       const user = await this.getUserFromRequest(req)
 
@@ -164,7 +164,8 @@ class AuthenticationController extends ApplicationController {
         })
 
         await user.update({
-          username,
+          firstName,
+          lastName,
           gender,
           dateOfBirth,
           photoProfile: img.url,
@@ -174,7 +175,8 @@ class AuthenticationController extends ApplicationController {
           status: 'success',
           message: 'user updated successfully',
           data: {
-            username,
+            firstName,
+          lastName,
             gender,
             dateOfBirth,
             photoProfile: img.url,
@@ -182,7 +184,8 @@ class AuthenticationController extends ApplicationController {
         })
       } else {
         await user.update({
-          username,
+          firstName,
+          lastName,
           gender,
           dateOfBirth,
           photoProfile,
@@ -192,7 +195,8 @@ class AuthenticationController extends ApplicationController {
           status: 'success',
           message: 'user updated successfully',
           data: {
-            username,
+            firstName,
+            lastName,
             gender,
             dateOfBirth,
             photoProfile,

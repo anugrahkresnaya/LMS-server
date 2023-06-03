@@ -36,6 +36,7 @@ function apply(app) {
   )
   app.get('/user', authenticationController.handleGetUser)
   app.get('/user/:id', authenticationController.handleGetUserById)
+  app.put("/user/update/:id", authenticationController.handleUpdateUser)
 
   return app
 }
