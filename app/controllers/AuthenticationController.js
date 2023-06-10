@@ -6,6 +6,7 @@ const EmailNotRegisteredError = require('../errors/EmailNotRegisteredError')
 const ApplicationController = require('./ApplicationController')
 const { NotFoundError } = require('../errors')
 const imageKit = require('../lib/imageKitConfig')
+const snap = require('../lib/midtransConfig')
 
 class AuthenticationController extends ApplicationController {
   constructor({ userModel, roleModel, bcrypt, jwt }) {
@@ -151,7 +152,7 @@ class AuthenticationController extends ApplicationController {
 
   handleUpdateUser = async (req, res) => {
     try {
-      const { firstName, lastName, gender, dateOfBirth, photoProfile } = req.body
+      const { firstName, lastName, gender, dateOfBirth, phoneNumber, photoProfile } = req.body
 
       const user = await this.getUserFromRequest(req)
 
@@ -168,6 +169,7 @@ class AuthenticationController extends ApplicationController {
           lastName,
           gender,
           dateOfBirth,
+          phoneNumber,
           photoProfile: img.url,
         })
 
@@ -176,9 +178,10 @@ class AuthenticationController extends ApplicationController {
           message: 'user updated successfully',
           data: {
             firstName,
-          lastName,
+            lastName,
             gender,
             dateOfBirth,
+            phoneNumber,
             photoProfile: img.url,
           },
         })
@@ -188,6 +191,7 @@ class AuthenticationController extends ApplicationController {
           lastName,
           gender,
           dateOfBirth,
+          phoneNumber,
           photoProfile,
         })
 
@@ -199,6 +203,7 @@ class AuthenticationController extends ApplicationController {
             lastName,
             gender,
             dateOfBirth,
+            phoneNumber,
             photoProfile,
           },
         })
@@ -265,6 +270,46 @@ class AuthenticationController extends ApplicationController {
       data: users,
     })
   }
+
+  // makeInstructor = async (req, res) => {
+  //   try {
+  //     const user = await this.getUserFromRequest(req)
+
+  //     console.log('user instructor: ', user)
+
+  //     let userAccount = {
+  //       "account_info": {
+  //         "account_mobile_phone": "08123456789",
+  //         "account_email": "email@example.com",
+  //         // "account_address": "Jalan Raya"
+  //       },
+  //       "business_info": {
+  //         "business_name": "Oceanz",
+  //         "business_category": "Kategori Bisnis",
+  //         "business_email": "oceanzplatform@gmail.com",
+  //         "business_mobile_phone": "087775562915",
+  //         // "business_address": "Jalan Bisnis"
+  //       }
+  //     };
+
+  //     snap.createAccount(userAccount)
+  //     .then((res) => {
+  //       res.redirect(res.redirect_url)
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       res.send('Terjadi kesalahan saat membuat URL onboarding');
+  //     });
+
+  //   } catch (err) {
+  //     res.status(422).json({
+  //       error: {
+  //         name: err.name,
+  //         message: err.message,
+  //       },
+  //     })
+  //   }
+  // }
 
   createTokenFromUser = (user, role) => {
     return this.jwt.sign(
