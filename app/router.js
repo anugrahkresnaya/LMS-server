@@ -4,6 +4,7 @@ const uploader = require('./middleware/uploader')
 const {
   ApplicationController,
   AuthenticationController,
+  CourseController
 } = require('./controllers')
 const { User, Role } = require('./models')
 
@@ -19,6 +20,8 @@ function apply(app) {
     userModel,
     roleModel,
   })
+
+  const courseController = new CourseController()
 
   const accessControl = authenticationController.accessControl
 
@@ -37,6 +40,10 @@ function apply(app) {
   app.get('/user', authenticationController.handleGetUser)
   app.get('/user/:id', authenticationController.handleGetUserById)
   app.put("/user/update/:id", authenticationController.handleUpdateUser)
+
+  // app.get('/onboarding', authenticationController.makeInstructor)
+  app.post("/course/upload-image", courseController.uploadPreviewImage)
+  app.post("/course/remove-image", courseController.removePreviewImage)
 
   return app
 }
