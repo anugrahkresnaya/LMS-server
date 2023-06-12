@@ -1,16 +1,17 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const uploader = require('./middleware/uploader')
+const upload = require('./middleware/upload')
 const {
   ApplicationController,
   AuthenticationController,
   CourseController
 } = require('./controllers')
-const { User, Role } = require('./models')
+const { User, Role, Course } = require('./models')
 
 function apply(app) {
   const userModel = User
   const roleModel = Role
+  const courseModel = Course
 
   const applicationController = new ApplicationController()
 
@@ -21,7 +22,7 @@ function apply(app) {
     roleModel,
   })
 
-  const courseController = new CourseController()
+  const courseController = new CourseController({ courseModel })
 
   const accessControl = authenticationController.accessControl
 
@@ -34,7 +35,7 @@ function apply(app) {
   app.get('/user/list', authenticationController.handleListUser)
   app.put(
     '/user/update/:id',
-    uploader.single('photoProfile'),
+    upload.single('photoProfile'),
     authenticationController.handleUpdateUser
   )
   app.get('/user', authenticationController.handleGetUser)
@@ -42,8 +43,8 @@ function apply(app) {
   app.put("/user/update/:id", authenticationController.handleUpdateUser)
 
   // app.get('/onboarding', authenticationController.makeInstructor)
-  app.post("/course/upload-image", courseController.uploadPreviewImage)
-  app.post("/course/remove-image", courseController.removePreviewImage)
+  app.post('/course/create-course', upload.any(), courseController.createCourse)
+  app.get('/course/:id', courseController.getCourseById)
 
   return app
 }
