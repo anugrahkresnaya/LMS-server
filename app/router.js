@@ -22,7 +22,7 @@ function apply(app) {
     roleModel,
   })
 
-  const courseController = new CourseController({ courseModel })
+  const courseController = new CourseController({ courseModel, userModel })
 
   const accessControl = authenticationController.accessControl
 
@@ -43,7 +43,7 @@ function apply(app) {
   app.put("/user/update/:id", authenticationController.handleUpdateUser)
 
   // app.get('/onboarding', authenticationController.makeInstructor)
-  app.post('/course/create-course', upload.any(), courseController.createCourse)
+  app.post('/course/:id/create-course', upload.any(), courseController.createCourse)
   // app.get('/course/:id', courseController.getCourseById)
   app.get('/course/:slug', courseController.getCourseBySlug)
   app.get('/courses', courseController.getCourseList)
