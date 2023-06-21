@@ -10,13 +10,15 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       title: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
       },
       slug: {
         type: Sequelize.STRING,
       },
       description: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       price: {
         type: Sequelize.INTEGER
@@ -25,6 +27,9 @@ module.exports = {
         type: Sequelize.STRING
       },
       video: {
+        type: Sequelize.STRING
+      },
+      pdf: {
         type: Sequelize.STRING
       },
       published: {

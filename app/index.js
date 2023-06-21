@@ -14,5 +14,6 @@ const corsOptions = {
 app.use(morgan(MORGAN_FORMAT))
 app.use(cors(corsOptions))
 app.use(express.json({ limit: "5mb" })) 
+app.use(express.urlencoded({ extended: true }));
 
 module.exports = router.apply(app)

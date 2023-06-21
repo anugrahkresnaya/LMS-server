@@ -16,10 +16,11 @@ module.exports = (sequelize, DataTypes) => {
   Course.init({
     title: DataTypes.STRING,
     slug: DataTypes.STRING,
-    description: DataTypes.STRING,
+    description: DataTypes.TEXT,
     price: DataTypes.INTEGER,
     image: DataTypes.STRING,
     video: DataTypes.STRING,
+    pdf: DataTypes.STRING,
     published: DataTypes.BOOLEAN,
     instructor: DataTypes.INTEGER,
     paid: DataTypes.BOOLEAN,
