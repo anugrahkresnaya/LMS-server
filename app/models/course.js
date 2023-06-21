@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.User, {
+        foreignKey: 'instructorId'
+      })
     }
   }
   Course.init({
@@ -22,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     video: DataTypes.STRING,
     pdf: DataTypes.STRING,
     published: DataTypes.BOOLEAN,
-    instructor: DataTypes.INTEGER,
+    instructorId: DataTypes.INTEGER,
     paid: DataTypes.BOOLEAN,
   }, {
     sequelize,

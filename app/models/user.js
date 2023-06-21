@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Role, {
         foreignKey: 'roleId',
       })
+
+      this.hasMany(models.Course, {
+        foreignKey: 'instructorId'
+      })
     }
   }
   User.init({
@@ -24,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     photoProfile: DataTypes.STRING,
     dateOfBirth: DataTypes.DATE,
     phoneNumber: DataTypes.STRING,
-    roleId: DataTypes.INTEGER
+    roleId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'User',
