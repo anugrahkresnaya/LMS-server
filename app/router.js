@@ -44,7 +44,9 @@ function apply(app) {
 
   // app.get('/onboarding', authenticationController.makeInstructor)
   app.post('/course/create-course', upload.any(), courseController.createCourse)
-  app.get('/course/:id', courseController.getCourseById)
+  // app.get('/course/:id', courseController.getCourseById)
+  app.get('/course/:slug', courseController.getCourseBySlug)
+  app.get('/courses', courseController.getCourseList)
 
   return app
 }

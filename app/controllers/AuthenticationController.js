@@ -271,46 +271,6 @@ class AuthenticationController extends ApplicationController {
     })
   }
 
-  // makeInstructor = async (req, res) => {
-  //   try {
-  //     const user = await this.getUserFromRequest(req)
-
-  //     console.log('user instructor: ', user)
-
-  //     let userAccount = {
-  //       "account_info": {
-  //         "account_mobile_phone": "08123456789",
-  //         "account_email": "email@example.com",
-  //         // "account_address": "Jalan Raya"
-  //       },
-  //       "business_info": {
-  //         "business_name": "Oceanz",
-  //         "business_category": "Kategori Bisnis",
-  //         "business_email": "oceanzplatform@gmail.com",
-  //         "business_mobile_phone": "087775562915",
-  //         // "business_address": "Jalan Bisnis"
-  //       }
-  //     };
-
-  //     snap.createAccount(userAccount)
-  //     .then((res) => {
-  //       res.redirect(res.redirect_url)
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       res.send('Terjadi kesalahan saat membuat URL onboarding');
-  //     });
-
-  //   } catch (err) {
-  //     res.status(422).json({
-  //       error: {
-  //         name: err.name,
-  //         message: err.message,
-  //       },
-  //     })
-  //   }
-  // }
-
   createTokenFromUser = (user, role) => {
     return this.jwt.sign(
       {
