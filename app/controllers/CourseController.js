@@ -34,16 +34,18 @@ const uploadFile = (file) => {
 }
 
 class CourseController extends ApplicationController {
-  constructor({ courseModel }) {
+  constructor({ courseModel, userModel }) {
     super()
     this.courseModel = courseModel
+    this.userModel = userModel
   }
 
   createCourse = async (req, res) => {
     try {
       const files = req.files;
       console.log('files', files)
-      const { title, description, price, paid, published } = req.body
+      const { title, description, price, paid } = req.body
+      const { id } = req.params
         
       if (!files || files.length < 2) {
         res.status(400).json({ message: 'Both image and video files are required' });
@@ -76,16 +78,20 @@ class CourseController extends ApplicationController {
 
       console.log('slugify', slugCourse)
 
+      const instructor = await this.userModel.findByPk(id)
+
+      console.log('instructor: ', instructor.id)
+
       const course = await this.courseModel.create({
         title,
         description,
         price,
         paid,
-        // published,
         image: imageUploadResponse.publicUrl,
         video: videoUploadResponse.publicUrl,
         pdf: pdfUploadResponse.publicUrl,
-        slug: slugCourse
+        slug: slugCourse,
+        instructorId: instructor.id,
       })
   
       res.status(200).json({

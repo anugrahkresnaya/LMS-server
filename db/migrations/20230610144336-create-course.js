@@ -36,7 +36,7 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
-      instructor: {
+      instructorId: {
         type: Sequelize.INTEGER
       },
       paid: {
