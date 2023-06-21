@@ -69,6 +69,8 @@ class AuthenticationController extends ApplicationController {
         message: 'Login Successful',
         id: user.id,
         user: user.email,
+        role: user.roleId,
+        photoProfile: user?.photoProfile,
         accessToken,
       })
     } catch (err) {
