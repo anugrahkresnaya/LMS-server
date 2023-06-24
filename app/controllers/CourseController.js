@@ -12,7 +12,7 @@ const bucketName = 'oceanz-bucket'
 
 const uploadFile = (file) => {
   const { originalname, buffer } = file
-  const filename = Date.now() + '_' + originalname
+  const filename = Date.now() + '_' + slugify(originalname, { lower: true })
   const bucket = storage.bucket(bucketName)
   const fileBlob = bucket.file(filename)
 
@@ -109,6 +109,69 @@ class CourseController extends ApplicationController {
     }
   }
 
+  handleUpdateCourse = async (req, res) => {
+    try {
+      const files = req.files;
+      const { title, description, price, paid } = req.body
+      const { slug } = req.params
+
+      let imageFile, videoFile, pdfFile;
+      for (const file of files) {
+        if (file.fieldname === 'image') {
+          imageFile = file
+        } else if (file.fieldname === 'video') {
+          videoFile = file
+        } else if (file.fieldname === 'pdf') {
+          pdfFile = file
+        }
+      }
+
+      if (!imageFile || !videoFile) {
+        res.status(400).json({ error: 'Please upload both an image and a video.' });
+        return;
+      }
+  
+      const imageUploadResponse = await uploadFile(imageFile)
+
+      const videoUploadResponse = await uploadFile(videoFile)
+
+      const pdfUploadResponse = await uploadFile(pdfFile)
+
+      const slugCourse = slugify(title, { lower: true })
+
+      const course = await this.courseModel.findOne({
+        where: {
+          slug: slug
+        }
+      })
+
+      await course.update({
+        title,
+        description,
+        price,
+        paid,
+        image: imageUploadResponse.publicUrl,
+        video: videoUploadResponse.publicUrl,
+        pdf: pdfUploadResponse.publicUrl,
+        slug: slugCourse,
+      })
+  
+      res.status(200).json({
+        status: 'OK',
+        message: 'Success update course',
+        data: [course],
+      });
+    } catch (error) {
+      console.log(error)
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        res.status(400).json({ error: 'Course with the same title already exists.' });
+      } else {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    }
+  }
+
   getCourseById = async (req, res) => {
     try {
       const course = await this.getCourseFromRequest(req)
@@ -164,13 +227,46 @@ class CourseController extends ApplicationController {
     }
   }
 
-  // handleUpdateCourse = async (req, res) => {
-  //   try {
-  //     const 
-  //   } catch (error) {
-      
-  //   }
-  // }
+  getCourseListByInstructorId = async (req, res) => {
+    try {
+      const { instructorId } = req.params
+      const courses = await this.courseModel.findAll({
+        where: {
+          instructorId: instructorId
+        }
+      })
+
+      res.status(200).json({
+        status: "OK",
+        message: "success get course list by instructor id",
+        data: courses,
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(404).json({ 
+        status: "Fail",
+        message: error.message 
+      })
+    }
+  }
+
+  handleDeleteCourse = async (req, res) => {
+    try {
+      const course = await this.getCourseFromRequest(req)
+      await course.destroy()
+
+      res.status(200).json({
+        status: "OK",
+        message: "User has been deleted"
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(404).json({
+        status: "Fail",
+        message: error.message 
+      })
+    }
+  }
 
   getCourseFromRequest(req) {
     return this.courseModel.findByPk(req.params.id)

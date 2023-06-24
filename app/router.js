@@ -4,14 +4,16 @@ const upload = require('./middleware/upload')
 const {
   ApplicationController,
   AuthenticationController,
-  CourseController
+  CourseController,
+  TransactionsController
 } = require('./controllers')
-const { User, Role, Course } = require('./models')
+const { User, Role, Course, Order } = require('./models')
 
 function apply(app) {
   const userModel = User
   const roleModel = Role
   const courseModel = Course
+  const orderModel = Order
 
   const applicationController = new ApplicationController()
 
@@ -23,6 +25,11 @@ function apply(app) {
   })
 
   const courseController = new CourseController({ courseModel, userModel })
+  const transactionController = new TransactionsController({
+    orderModel,
+    courseModel,
+    userModel
+  })
 
   const accessControl = authenticationController.accessControl
 
@@ -41,12 +48,17 @@ function apply(app) {
   app.get('/user', authenticationController.handleGetUser)
   app.get('/user/:id', authenticationController.handleGetUserById)
   app.put("/user/update/:id", authenticationController.handleUpdateUser)
+  app.delete('/user/delete/:id', authenticationController.authorize(accessControl.ADMIN), authenticationController.handleDeleteUser)
 
-  // app.get('/onboarding', authenticationController.makeInstructor)
-  app.post('/course/:id/create-course', upload.any(), courseController.createCourse)
+  app.post('/course/:id/create-course', upload.any(), authenticationController.authorize(), courseController.createCourse)
   // app.get('/course/:id', courseController.getCourseById)
   app.get('/course/:slug', courseController.getCourseBySlug)
+  app.put('/course/update/:slug', upload.any(), courseController.handleUpdateCourse)
   app.get('/courses', courseController.getCourseList)
+  app.get('/courses/:instructorId', authenticationController.authorize(), courseController.getCourseListByInstructorId)
+  app.delete('/course/delete/:id', authenticationController.authorize(), courseController.handleDeleteCourse)
+
+  // app.get('/check', transactionController.handleCheckout)
 
   return app
 }
