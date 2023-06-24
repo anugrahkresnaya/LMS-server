@@ -29,9 +29,12 @@ module.exports = (sequelize, DataTypes) => {
     dateOfBirth: DataTypes.DATE,
     phoneNumber: DataTypes.STRING,
     roleId: DataTypes.INTEGER,
+    destroyedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'User',
+    paranoid: true,
+    deletedAt: 'destroyedAt'
   });
   return User;
 };
