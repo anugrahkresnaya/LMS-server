@@ -22,13 +22,29 @@ class AuthenticationController extends ApplicationController {
     USER: 'USER',
   }
 
-  // authorize = (rolename) => {
-  //   return (req, res, next) => {
-  //     try {
-  //       const token = req.headers.authorization?.split()
-  //     }
-  //   }
-  // }
+  authorize = (rolename) => {
+    return (req, res, next) => {
+      try {
+        const token = req.headers.authorization?.split("Bearer ")[1];
+        const payload = this.decodeToken(token)
+
+        if (!!rolename && rolename != payload.role.name)
+          throw new InsufficientAccessError(payload?.role?.name);
+        req.user = payload;
+        next();
+      }
+
+      catch (err) {
+        res.status(401).json({
+          error: {
+            name: err.name,
+            message: err.message,
+            details: err.details || null,
+          }
+        })
+      }
+    }
+  }
 
   handleLogin = async (req, res) => {
     try {
@@ -292,6 +308,24 @@ class AuthenticationController extends ApplicationController {
     )
   }
 
+  handleDeleteUser = async (req, res) => {
+    try {
+      const user = await this.getUserFromRequest(req)
+      await user.destroy()
+
+      res.status(200).json({
+        status: "OK",
+        message: "User has been deleted"
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(404).json({
+        status: "Fail",
+        message: error.message,
+      })
+    }
+  }
+
   encryptPassword = (password) => {
     return this.bcrypt.hashSync(password, 10)
   }
@@ -302,6 +336,10 @@ class AuthenticationController extends ApplicationController {
 
   getUserFromRequest(req) {
     return this.userModel.findByPk(req.params.id)
+  }
+
+  decodeToken(token) {
+    return this.jwt.verify(token, JWT_SIGNATURE_KEY);
   }
 }
 
