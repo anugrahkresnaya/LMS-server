@@ -21,9 +21,18 @@ module.exports = {
       amount: {
         type: Sequelize.INTEGER
       },
+      transactionId: {
+        type: Sequelize.STRING
+      },
       status: {
         type: Sequelize.STRING,
         defaultValue: 'pending',
+      },
+      token: {
+        type: Sequelize.STRING
+      },
+      redirectUrl: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
