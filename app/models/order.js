@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       })
 
       this.belongsTo(models.Course, {
-        foreignKey: 'totalAmount'
+        foreignKey: 'amount'
       })
     }
   }
@@ -33,7 +33,10 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     instructorId: DataTypes.INTEGER,
     amount: DataTypes.INTEGER,
+    transactionId: DataTypes.STRING,
     status: DataTypes.STRING,
+    token: DataTypes.STRING,
+    redirectUrl: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Order',
