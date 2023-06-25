@@ -61,6 +61,7 @@ function apply(app) {
   // app.get('/check', transactionController.handleCheckout)
   app.post('/course/:id/order', transactionController.handleCheckout)
   app.post('/payment/updateStatus', transactionController.handleAfterPayment)
+  app.get('/course/order/courseId', transactionController.getOrderByCourseId)
   // app.get('/orderId', transactionController.getOrderByOrderId)
 
   return app

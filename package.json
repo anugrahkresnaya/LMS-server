@@ -11,7 +11,8 @@
     "db:drop": "sequelize db:drop",
     "db:migrate": "sequelize db:migrate",
     "db:seed": "sequelize db:seed:undo:all && sequelize db:seed:all",
-    "db:setup": "npm run db:drop && npm run db:create && npm run db:migrate && npm run db:seed"
+    "db:setup": "npm run db:drop && npm run db:create && npm run db:migrate && npm run db:seed",
+    "prebuild": "node config/generate-gcp-service-key.js"
   },
   "keywords": [],
   "author": "",

@@ -5,7 +5,7 @@ const fs = require('fs');
 const { default: slugify } = require('slugify');
 
 const storage = new Storage({
-  keyFilename: process.env.GCP_SERVICE_ACCOUNT_KEY,
+  keyFilename: 'oceanz-e77e1cd719df.json',
   projectId: 'oceanz'
 })
 const bucketName = 'oceanz-bucket'
