@@ -23,7 +23,7 @@ module.exports = {
           slug: 'kursus-gratis',
           description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris a ipsum eu tortor aliquam aliquam quis eu metus. Etiam tempor augue dui, sed sollicitudin justo hendrerit eu. Phasellus luctus interdum dolor, eu molestie dolor vulputate et. Nam gravida mi ut lorem varius posuere. Morbi porttitor dui in viverra laoreet.',
           price: 0,
-          image: 'https://storage.googleapis.com/oceanz-bucket/1687362796885_course.jpg',
+          image: 'https://storage.googleapis.com/oceanz-bucket/1687667361654_course.jpg',
           video: 'https://storage.googleapis.com/oceanz-bucket/1687616319884_bali-ads.mp4',
           pdf: 'https://storage.googleapis.com/oceanz-bucket/1687616342915_gk2.pdf',
           instructorId: 3,

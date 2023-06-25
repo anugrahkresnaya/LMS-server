@@ -28,7 +28,7 @@ class TransactionsController {
       // midtrans snap transaction
       let parameter = {
         "transaction_details": {
-          "order_id": `ORDER-${course.slug}-${Date.now()}`,
+          "order_id": `ORDER-${course.id}-${Date.now()}`,
           "gross_amount": course.price
         }, "credit_card":{
           "secure" : true
@@ -105,6 +105,57 @@ class TransactionsController {
       }
 
       res.sendStatus(200);
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        status: 'Fail',
+        message: error.message
+      })
+    }
+  }
+
+  handleOrderList = async (req, res) => {
+    try {
+      const order = await this.orderModel.findAll()
+      
+      res.status(200).json({
+        status: "OK",
+        message: "get order list success",
+        data: order
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        status: 'Fail',
+        message: error.message
+      })
+    }
+  }
+
+  getOrderByCourseId = async (req, res) => {
+    try {
+      const courseId = req.body.courseId
+
+      console.log('id', courseId)
+
+      const order = await this.orderModel.findOne({
+        where: {
+          courseId
+        }
+      })
+
+      if (!order) {
+        res.status(404).json({
+          status: 'Fail',
+          message: 'course id in order table not found'
+        })
+      } else {
+        res.status(200).json({
+          status: "OK",
+          message: "Get order by course id success",
+          data: order
+        })
+      }
     } catch (error) {
       console.log(error)
       res.status(500).json({
