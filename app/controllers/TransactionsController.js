@@ -114,31 +114,31 @@ class TransactionsController {
     }
   }
 
-  getOrderByOrderId = async (req, res) => {
-    try {
-      const { order_id } = req.body
+  // getOrderByOrderId = async (req, res) => {
+  //   try {
+  //     const { order_id } = req.body
 
-      console.log(order_id)
+  //     console.log(order_id)
 
-      const order = await this.orderModel.findOne({
-        where: {
-          transactionId: order_id
-        }
-      })
+  //     const order = await this.orderModel.findOne({
+  //       where: {
+  //         transactionId: order_id
+  //       }
+  //     })
 
-      res.status(200).json({
-        status: "OK",
-        message: "Get order by id success",
-        data: order
-      })
-    } catch (error) {
-      console.log(error)
-      res.status(500).json({
-        status: 'Fail',
-        message: error.message
-      })
-    }
-  }
+  //     res.status(200).json({
+  //       status: "OK",
+  //       message: "Get order by id success",
+  //       data: order
+  //     })
+  //   } catch (error) {
+  //     console.log(error)
+  //     res.status(500).json({
+  //       status: 'Fail',
+  //       message: error.message
+  //     })
+  //   }
+  // }
 }
 
 module.exports = TransactionsController
