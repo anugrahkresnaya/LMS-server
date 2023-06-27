@@ -134,7 +134,7 @@ class TransactionsController {
 
   getOrderByCourseId = async (req, res) => {
     try {
-      const courseId = req.body.courseId
+      const { courseId } = req.body
 
       console.log('id', courseId)
 

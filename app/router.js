@@ -51,7 +51,7 @@ function apply(app) {
   app.delete('/user/delete/:id', authenticationController.authorize(accessControl.ADMIN), authenticationController.handleDeleteUser)
 
   app.post('/course/:id/create-course', upload.any(), authenticationController.authorize(), courseController.createCourse)
-  app.get('/course/id/:id', courseController.getCourseById)
+  // app.get('/course/id/:id', courseController.getCourseById)
   app.get('/course/:slug', courseController.getCourseBySlug)
   app.put('/course/update/:slug', upload.any(), courseController.handleUpdateCourse)
   app.get('/courses', courseController.getCourseList)
@@ -61,7 +61,7 @@ function apply(app) {
   // app.get('/check', transactionController.handleCheckout)
   app.post('/course/:id/order', transactionController.handleCheckout)
   app.post('/payment/updateStatus', transactionController.handleAfterPayment)
-  app.get('/course/order/courseId', transactionController.getOrderByCourseId)
+  app.post('/access', transactionController.getOrderByCourseId)
   // app.get('/orderId', transactionController.getOrderByOrderId)
 
   return app
