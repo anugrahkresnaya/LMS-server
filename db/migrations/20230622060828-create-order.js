@@ -18,6 +18,9 @@ module.exports = {
       instructorId: {
         type: Sequelize.INTEGER
       },
+      slug: {
+        type: Sequelize.STRING
+      },
       amount: {
         type: Sequelize.INTEGER
       },

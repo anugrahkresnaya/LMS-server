@@ -55,14 +55,18 @@ function apply(app) {
   app.get('/course/:slug', courseController.getCourseBySlug)
   app.put('/course/update/:slug', upload.any(), courseController.handleUpdateCourse)
   app.get('/courses', courseController.getCourseList)
+  app.post('/courses/list/byId', courseController.getCourseListById)
   app.get('/courses/:instructorId', authenticationController.authorize(), courseController.getCourseListByInstructorId)
   app.delete('/course/delete/:id', authenticationController.authorize(), courseController.handleDeleteCourse)
 
   // app.get('/check', transactionController.handleCheckout)
   app.post('/course/:id/order', transactionController.handleCheckout)
+  // app.post('/courseFree/:id/order', transactionController.handleCheckoutFree)
   app.post('/payment/updateStatus', transactionController.handleAfterPayment)
-  app.get('/course/order/courseId', transactionController.getOrderByCourseId)
+  app.post('/access', transactionController.getOrderByCourseId)
+  app.post('/getCourseBySettlement', transactionController.getOrderBySettlement)
   // app.get('/orderId', transactionController.getOrderByOrderId)
+  app.get('/orders', transactionController.handleOrderList)
 
   return app
 }
