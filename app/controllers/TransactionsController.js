@@ -9,11 +9,9 @@ class TransactionsController {
 
   // midtrans payment
   handleCheckout = async (req, res) => {
-    // const { courseId, amount, userId, instructorId } = req.body
-
     try {
       const { id } = req.params
-      const { userId, instructorId } = req.body
+      const { userId, instructorId, slug } = req.body
       const course = await this.courseModel.findByPk(id)
 
       const customer = await this.userModel.findByPk(userId)
@@ -25,46 +23,65 @@ class TransactionsController {
         return;
       }
 
-      // midtrans snap transaction
-      let parameter = {
-        "transaction_details": {
-          "order_id": `ORDER-${course.id}-${Date.now()}`,
-          "gross_amount": course.price
-        }, "credit_card":{
-          "secure" : true
-        }, "customer_details": {
-          first_name: customer.firstName,
-          last_name: customer.lastName,
-          email: customer.email
+      if(course.paid === false) {
+        const order = await this.orderModel.create({
+          courseId: course.id,
+          transactionId: `ORDER-${course.id}-${Date.now()}`,
+          amount: 0,
+          userId,
+          instructorId,
+          slug,
+          status: 'settlement'
+        })
+  
+        res.status(201).json({
+          status: "OK",
+          message: "Order success",
+          data: order
+        })
+      } else {
+        // midtrans snap transaction
+        let parameter = {
+          "transaction_details": {
+            "order_id": `ORDER-${course.id}-${Date.now()}`,
+            "gross_amount": course.price
+          }, "credit_card":{
+            "secure" : true
+          }, "customer_details": {
+            first_name: customer.firstName,
+            last_name: customer.lastName,
+            email: customer.email
+          }
         }
+
+        const transactionOptions = {
+          // Set callback URLs for success, failure, and pending payments
+          successRedirectUrl: 'https://oceanz.vercel.app/payment',
+          // failureRedirectUrl: 'http://your-website.com/failure',
+          // pendingRedirectUrl: 'http://your-website.com/pending',
+        } 
+
+        const transactionToken = await snap.createTransaction(parameter, transactionOptions)
+
+        console.log('transaction', transactionToken)
+
+        const order = await this.orderModel.create({
+          courseId: course.id,
+          transactionId: parameter.transaction_details.order_id,
+          amount: parameter.transaction_details.gross_amount,
+          userId,
+          instructorId,
+          slug,
+          token: transactionToken.token,
+          redirectUrl: transactionToken.redirect_url
+        })
+
+        res.status(201).json({
+          status: "OK",
+          message: "Order success",
+          data: order
+        })
       }
-
-      const transactionOptions = {
-        // Set callback URLs for success, failure, and pending payments
-        successRedirectUrl: 'https://b0b6-101-128-127-159.ngrok-free.app/payment',
-        // failureRedirectUrl: 'http://your-website.com/failure',
-        // pendingRedirectUrl: 'http://your-website.com/pending',
-      } 
-
-      const transactionToken = await snap.createTransaction(parameter, transactionOptions)
-
-      console.log('transaction', transactionToken)
-
-      const order = await this.orderModel.create({
-        courseId: course.id,
-        transactionId: parameter.transaction_details.order_id,
-        amount: parameter.transaction_details.gross_amount,
-        userId,
-        instructorId,
-        token: transactionToken.token,
-        redirectUrl: transactionToken.redirect_url
-      })
-
-      res.status(201).json({
-        status: "OK",
-        message: "Order success",
-        data: order
-      })
     } catch (error) {
       console.log(error)
       res.status(500).json({
@@ -73,6 +90,41 @@ class TransactionsController {
       })
     }
   }
+
+  // handleCheckoutFree = async (req, res) => {
+  //   try {
+  //     const { id } = req.params
+  //     const { userId, instructorId, slug } = req.body
+  //     const course = await this.courseModel.findByPk(id)
+
+  //     if (!course) {
+  //       res.status(404).json({ error: 'Course not found.' });
+  //       return;
+  //     }
+
+  //     const order = await this.orderModel.create({
+  //       courseId: course.id,
+  //       transactionId: `ORDER-${course.id}-${Date.now()}`,
+  //       amount: 0,
+  //       userId,
+  //       instructorId,
+  //       slug,
+  //       status: 'settlement'
+  //     })
+
+  //     res.status(201).json({
+  //       status: "OK",
+  //       message: "Order success",
+  //       data: order
+  //     })
+  //   } catch (error) {
+  //     console.log(error)
+  //     res.status(500).json({
+  //       status: 'Fail',
+  //       message: error.message
+  //     })
+  //   }
+  // }
 
   handleAfterPayment = async (req, res) => {
     // const order_id = req.query.order_id
@@ -156,6 +208,31 @@ class TransactionsController {
           data: order
         })
       }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        status: 'Fail',
+        message: error.message
+      })
+    }
+  }
+
+  getOrderBySettlement = async (req, res) => {
+    try {
+      const { userId } = req.body
+
+      const order = await this.orderModel.findAll({
+        where: {
+          userId,
+          status: 'settlement'
+        }
+      })
+
+      res.status(200).json({
+        status: "OK",
+        message: "get settlement in order success",
+        data: order
+      })
     } catch (error) {
       console.log(error)
       res.status(500).json({

@@ -250,6 +250,36 @@ class CourseController extends ApplicationController {
     }
   }
 
+  getCourseListById = async (req, res) => {
+    try {
+      const { courseId } = req.body
+      const courses = await this.courseModel.findAll({
+        where: {
+          id: courseId
+        }
+      })
+
+      if(!courses) {
+        res.status(404).json({ 
+          status: "Fail",
+          message: "courses not found" 
+        })
+      }
+
+      res.status(200).json({
+        status: "OK",
+        message: "success get course list by course id",
+        data: courses,
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(404).json({ 
+        status: "Fail",
+        message: error.message 
+      })
+    }
+  }
+
   handleDeleteCourse = async (req, res) => {
     try {
       const course = await this.getCourseFromRequest(req)

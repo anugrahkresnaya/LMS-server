@@ -51,18 +51,22 @@ function apply(app) {
   app.delete('/user/delete/:id', authenticationController.authorize(accessControl.ADMIN), authenticationController.handleDeleteUser)
 
   app.post('/course/:id/create-course', upload.any(), authenticationController.authorize(), courseController.createCourse)
-  // app.get('/course/id/:id', courseController.getCourseById)
+  app.get('/course/id/:id', courseController.getCourseById)
   app.get('/course/:slug', courseController.getCourseBySlug)
   app.put('/course/update/:slug', upload.any(), courseController.handleUpdateCourse)
   app.get('/courses', courseController.getCourseList)
+  app.post('/courses/list/byId', courseController.getCourseListById)
   app.get('/courses/:instructorId', authenticationController.authorize(), courseController.getCourseListByInstructorId)
   app.delete('/course/delete/:id', authenticationController.authorize(), courseController.handleDeleteCourse)
 
   // app.get('/check', transactionController.handleCheckout)
   app.post('/course/:id/order', transactionController.handleCheckout)
+  // app.post('/courseFree/:id/order', transactionController.handleCheckoutFree)
   app.post('/payment/updateStatus', transactionController.handleAfterPayment)
   app.post('/access', transactionController.getOrderByCourseId)
+  app.post('/getCourseBySettlement', transactionController.getOrderBySettlement)
   // app.get('/orderId', transactionController.getOrderByOrderId)
+  app.get('/orders', transactionController.handleOrderList)
 
   return app
 }
