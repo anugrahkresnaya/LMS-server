@@ -5,15 +5,23 @@ const {
   ApplicationController,
   AuthenticationController,
   CourseController,
-  TransactionsController
+  TransactionsController,
+  CommentController
 } = require('./controllers')
-const { User, Role, Course, Order } = require('./models')
+const { 
+  User,
+  Role,
+  Course,
+  Order,
+  Comment
+} = require('./models')
 
 function apply(app) {
   const userModel = User
   const roleModel = Role
   const courseModel = Course
   const orderModel = Order
+  const commentModel = Comment
 
   const applicationController = new ApplicationController()
 
@@ -28,6 +36,11 @@ function apply(app) {
   const transactionController = new TransactionsController({
     orderModel,
     courseModel,
+    userModel
+  })
+  const commentController = new CommentController({
+    courseModel,
+    commentModel,
     userModel
   })
 
@@ -67,6 +80,10 @@ function apply(app) {
   app.post('/getCourseBySettlement', transactionController.getOrderBySettlement)
   // app.get('/orderId', transactionController.getOrderByOrderId)
   app.get('/orders', transactionController.handleOrderList)
+
+  app.post('/comment/:courseSlug', commentController.handleCreateComment)
+  app.get('/comments/:courseSlug', commentController.handleGetComments)
+  app.delete('/comment/:id', commentController.handleDeleteComment)
 
   return app
 }
