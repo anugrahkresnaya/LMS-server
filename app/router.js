@@ -79,6 +79,7 @@ function apply(app) {
   app.post('/courses/list/byId', courseController.getCourseListById)
   app.get('/courses/:instructorId', authenticationController.authorize(), courseController.getCourseListByInstructorId)
   app.delete('/course/delete/:id', authenticationController.authorize(), courseController.handleDeleteCourse)
+  app.get('/searchCourses', courseController.handleSearchCourse)
 
   // app.get('/check', transactionController.handleCheckout)
   app.post('/course/:id/order', transactionController.handleCheckout)

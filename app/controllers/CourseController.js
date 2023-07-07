@@ -1,8 +1,7 @@
 const { Storage } = require('@google-cloud/storage')
-const ApplicationController = require("./ApplicationController");
-const imagekit = require('../lib/imageKitConfig')
-const fs = require('fs');
-const { default: slugify } = require('slugify');
+const ApplicationController = require("./ApplicationController")
+const { default: slugify } = require('slugify')
+const { Op } = require("sequelize")
 
 const storage = new Storage({
   keyFilename: 'oceanz-e77e1cd719df.json',
@@ -294,6 +293,41 @@ class CourseController extends ApplicationController {
       res.status(404).json({
         status: "Fail",
         message: error.message 
+      })
+    }
+  }
+
+  handleSearchCourse = async (req, res) => {
+    const { keyword } = req.query
+    try {
+      const courses = await this.courseModel.findAll({
+        where: {
+          title: {
+            [Op.or]: [
+              {
+                [Op.iLike]: `%${keyword}%`
+              },
+              {
+                [Op.iLike]: `${keyword}%`
+              },
+              {
+                [Op.iLike]: `%${keyword}`
+              }
+            ]
+          }
+        }
+      })
+
+      if (courses.length === 0) {
+        return res.status(404).json({ message: 'Course not found' });
+      }
+
+      res.json(courses)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        status: "Fail",
+        message: error.message
       })
     }
   }
