@@ -6,14 +6,16 @@ const {
   AuthenticationController,
   CourseController,
   TransactionsController,
-  CommentController
+  CommentController,
+  RatingController
 } = require('./controllers')
 const { 
   User,
   Role,
   Course,
   Order,
-  Comment
+  Comment,
+  Rating
 } = require('./models')
 
 function apply(app) {
@@ -22,6 +24,7 @@ function apply(app) {
   const courseModel = Course
   const orderModel = Order
   const commentModel = Comment
+  const ratingModel = Rating
 
   const applicationController = new ApplicationController()
 
@@ -41,6 +44,11 @@ function apply(app) {
   const commentController = new CommentController({
     courseModel,
     commentModel,
+    userModel
+  })
+  const ratingController = new RatingController({
+    ratingModel,
+    courseModel,
     userModel
   })
 
@@ -84,6 +92,17 @@ function apply(app) {
   app.post('/comment/:courseSlug', commentController.handleCreateComment)
   app.get('/comments/:courseSlug', commentController.handleGetComments)
   app.delete('/comment/:id', commentController.handleDeleteComment)
+
+  app.post(
+    '/rating/:courseSlug',
+    authenticationController.authorize(accessControl.USER),
+    ratingController.handleCreateRating
+  )
+  app.get('/ratings', ratingController.handleGetRatingList)
+  app.get(
+    '/ratingsBySlug/:courseSlug',
+    ratingController.handleGetRatingByCourseSlug
+  )
 
   return app
 }
