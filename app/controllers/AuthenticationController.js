@@ -6,7 +6,8 @@ const EmailNotRegisteredError = require('../errors/EmailNotRegisteredError')
 const ApplicationController = require('./ApplicationController')
 const { NotFoundError } = require('../errors')
 const imageKit = require('../lib/imageKitConfig')
-const snap = require('../lib/midtransConfig')
+const nodemailer = require('nodemailer')
+const { validationResult } = require('express-validator')
 
 class AuthenticationController extends ApplicationController {
   constructor({ userModel, roleModel, bcrypt, jwt }) {
@@ -67,7 +68,10 @@ class AuthenticationController extends ApplicationController {
       )
 
       if (!isPasswordCorrect) {
-        res.status(401).json(new Error())
+        res.status(401).json({
+          status: "Fail",
+          message: "Password incorrect"
+        })
         return
       }
 
@@ -166,6 +170,90 @@ class AuthenticationController extends ApplicationController {
       user: user.email,
       accessToken,
     })
+  }
+
+  handleForgotPassword = async (req, res) => {
+    const pw = process.env.SENDER_PASSWORD
+    console.log('pw', pw)
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'oceanzplatform@gmail.com',
+        pass: pw
+      }
+    })
+
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email } = req.body
+
+    try {
+      const user = await this.userModel.findOne({ where: { email } })
+
+      if (!user) {
+        return res.status(404).json({ message: 'User not found!' })
+      }
+
+      const resetToken = this.jwt.sign(
+        { email },
+        JWT_SIGNATURE_KEY,
+        { expiresIn: '1h' }
+      )
+
+      const mailOptions = {
+        from: 'oceanzplatform@gmail.com',
+        to: email,
+        subject: 'Reset Password',
+        text: `Anda menerima email ini karena Anda atau seseorang meminta reset password. Klik link berikut untuk mereset password Anda: http://localhost:3000/reset-password/${resetToken}`,
+      }
+
+      await transporter.sendMail(mailOptions)
+
+      res.status(200).json({
+        status: "OK",
+        message: 'Reset password email has been sent'
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ message: error.message })
+    }
+  }
+
+  handleResetPassword = async (req, res) => {
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { token } = req.params
+
+    try {
+      const decodedToken = this.jwt.verify(token, JWT_SIGNATURE_KEY)
+      const { email } = decodedToken
+      const { password } = req.body
+
+      const user = await this.userModel.findOne({ where: { email } })
+      if (!user) {
+        return res.status(404).json({ message: 'User tidak ditemukan' });
+      }
+
+      user.encryptedPassword = this.encryptPassword(password);
+      await user.save();
+
+      res.status(200).json({
+        status: "OK",
+        message: "Password berhasil diubah"
+      })
+    } catch (error) {
+      console.log(error)
+      if (error.name === 'TokenExpiredError') {
+        return res.status(400).json({ message: 'Reset password token has been expired' });
+      }
+      return res.status(400).json({ message: 'Reset password token invalid' });
+    }
   }
 
   handleUpdateUser = async (req, res) => {
