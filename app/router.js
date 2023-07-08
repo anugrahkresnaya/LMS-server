@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const { body } = require('express-validator')
 const upload = require('./middleware/upload')
 const {
   ApplicationController,
@@ -59,6 +60,16 @@ function apply(app) {
   app.post('/register', authenticationController.handleRegister)
   app.post('/login', authenticationController.handleLogin)
   app.get('/logout', authenticationController.handleLogout)
+  app.post(
+    '/forgot-password',
+    [body('email').isEmail().withMessage('Invalid Email')],
+    authenticationController.handleForgotPassword
+  )
+  app.post(
+    '/reset-password/:token',
+    [body('password').isLength({ min: 6 }).withMessage('password at least have 6 characters or more')],
+    authenticationController.handleResetPassword
+  )
 
   app.get('/user/list', authenticationController.handleListUser)
   app.put(
