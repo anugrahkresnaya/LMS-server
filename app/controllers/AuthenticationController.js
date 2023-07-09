@@ -207,7 +207,7 @@ class AuthenticationController extends ApplicationController {
         from: 'oceanzplatform@gmail.com',
         to: email,
         subject: 'Reset Password',
-        text: `Anda menerima email ini karena Anda atau seseorang meminta reset password. Klik link berikut untuk mereset password Anda: http://localhost:3000/reset-password/${resetToken}`,
+        text: `You received this email because you or someone requested a password reset. Click the following link to reset your password: https://oceanz.vercel.app/reset-password/${resetToken}`,
       }
 
       await transporter.sendMail(mailOptions)
