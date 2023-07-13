@@ -186,13 +186,14 @@ class TransactionsController {
 
   getOrderByCourseId = async (req, res) => {
     try {
-      const { courseId } = req.body
+      const { courseId, userId } = req.body
 
       console.log('id', courseId)
 
       const order = await this.orderModel.findOne({
         where: {
-          courseId
+          courseId,
+          userId
         }
       })
 
