@@ -34,7 +34,7 @@ module.exports = {
         {
           title: 'Visualisasi Data Statik ke Visualisasi Data Interaktif',
           slug: 'visualisasi-data-statik-ke-visualisasi-data-interaktif',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris a ipsum eu tortor aliquam aliquam quis eu metus. Etiam tempor augue dui, sed sollicitudin justo hendrerit eu. Phasellus luctus interdum dolor, eu molestie dolor vulputate et. Nam gravida mi ut lorem varius posuere. Morbi porttitor dui in viverra laoreet.',
+          description: 'Kursus ini adalah kursus yang akan membantu anda untuk memahami bagaimana cara mengubah visualisasi data statik ke visualisasi data interaktif. Kursus ini berupa tutorial yang akan menuntun anda secara bertahap. Kursus ini akan menggunakan bahasa pemrograman Python yang dimana menggunakan dua library paling populer, yaitu Bokeh dan Plotly. Dua library ini akan menghasilkan visualisasi data interaktif yang telah diolah dan dapat dieskplor oleh user secara lebih luas dan real-time.',
           price: 10000,
           image: 'https://storage.googleapis.com/oceanz-bucket/1687667361654_course.jpg',
           video: 'https://storage.googleapis.com/oceanz-bucket/1687667363371_video-materi-ajar-chapter-3-anugrah-kresnaya.mp4',
