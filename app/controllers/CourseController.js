@@ -42,14 +42,8 @@ class CourseController extends ApplicationController {
   createCourse = async (req, res) => {
     try {
       const files = req.files;
-      console.log('files', files)
       const { title, description, price, paid } = req.body
       const { id } = req.params
-        
-      if (!files || files.length < 2) {
-        res.status(400).json({ message: 'Both image and video files are required' });
-        return;
-      }
 
       let imageFile, videoFile, pdfFile;
       for (const file of files) {
@@ -62,42 +56,38 @@ class CourseController extends ApplicationController {
         }
       }
 
-      if (!imageFile || !videoFile) {
-        res.status(400).json({ error: 'Please upload both an image and a video.' });
-        return;
+      if ((!videoFile && pdfFile) || (videoFile && !pdfFile)) {
+        const imageUploadResponse = imageFile ? await uploadFile(imageFile) : undefined
+
+        const videoUploadResponse = videoFile ? await uploadFile(videoFile) : undefined
+
+        const pdfUploadResponse = pdfFile ? await uploadFile(pdfFile) : undefined
+
+        const slugCourse = slugify(title, { lower: true })
+
+        const instructor = await this.userModel.findByPk(id)
+
+        const course = await this.courseModel.create({
+          title,
+          description,
+          price,
+          paid,
+          image: imageUploadResponse?.publicUrl,
+          video: videoUploadResponse?.publicUrl,
+          pdf: pdfUploadResponse?.publicUrl,
+          slug: slugCourse,
+          instructorId: instructor?.id,
+        })
+    
+        res.status(200).json({
+          status: 'OK',
+          message: 'Success create course',
+          data: [course],
+        });
+      } else {
+        res.status(400).json({ message: 'You have to provide video or pdf' })
+        return
       }
-  
-      const imageUploadResponse = await uploadFile(imageFile)
-
-      const videoUploadResponse = await uploadFile(videoFile)
-
-      const pdfUploadResponse = await uploadFile(pdfFile)
-
-      const slugCourse = slugify(title, { lower: true })
-
-      console.log('slugify', slugCourse)
-
-      const instructor = await this.userModel.findByPk(id)
-
-      console.log('instructor: ', instructor.id)
-
-      const course = await this.courseModel.create({
-        title,
-        description,
-        price,
-        paid,
-        image: imageUploadResponse.publicUrl,
-        video: videoUploadResponse.publicUrl,
-        pdf: pdfUploadResponse.publicUrl,
-        slug: slugCourse,
-        instructorId: instructor.id,
-      })
-  
-      res.status(200).json({
-        status: 'OK',
-        message: 'Success create course',
-        data: [course],
-      });
     } catch (error) {
       if (error.name === 'SequelizeUniqueConstraintError') {
         res.status(400).json({ error: 'Course with the same title already exists.' });
@@ -125,41 +115,65 @@ class CourseController extends ApplicationController {
         }
       }
 
-      if (!imageFile || !videoFile) {
-        res.status(400).json({ error: 'Please upload both an image and a video.' });
-        return;
+      if(!title) {
+        const imageUploadResponse = imageFile ? await uploadFile(imageFile) : undefined
+
+        const videoUploadResponse = videoFile ? await uploadFile(videoFile) : undefined
+
+        const pdfUploadResponse = pdfFile ? await uploadFile(pdfFile) : undefined
+
+        const course = await this.courseModel.findOne({
+          where: {
+            slug: slug
+          }
+        })
+
+        await course.update({
+          description,
+          price,
+          paid,
+          image: imageUploadResponse?.publicUrl,
+          video: videoUploadResponse?.publicUrl,
+          pdf: pdfUploadResponse?.publicUrl,
+        })
+    
+        res.status(200).json({
+          status: 'OK',
+          message: 'Success update course',
+          data: [course],
+        });
+      } else {
+        const imageUploadResponse = imageFile ? await uploadFile(imageFile) : undefined
+
+        const videoUploadResponse = videoFile ? await uploadFile(videoFile) : undefined
+
+        const pdfUploadResponse = pdfFile ? await uploadFile(pdfFile) : undefined
+
+        const slugCourse = slugify(title, { lower: true })
+
+        const course = await this.courseModel.findOne({
+          where: {
+            slug: slug
+          }
+        })
+
+        await course.update({
+          title,
+          description,
+          price,
+          paid,
+          image: imageUploadResponse?.publicUrl,
+          video: videoUploadResponse?.publicUrl,
+          pdf: pdfUploadResponse?.publicUrl,
+          slug: slugCourse,
+        })
+    
+        res.status(200).json({
+          status: 'OK',
+          message: 'Success update course',
+          data: [course],
+        });
       }
-  
-      const imageUploadResponse = await uploadFile(imageFile)
-
-      const videoUploadResponse = await uploadFile(videoFile)
-
-      const pdfUploadResponse = await uploadFile(pdfFile)
-
-      const slugCourse = slugify(title, { lower: true })
-
-      const course = await this.courseModel.findOne({
-        where: {
-          slug: slug
-        }
-      })
-
-      await course.update({
-        title,
-        description,
-        price,
-        paid,
-        image: imageUploadResponse.publicUrl,
-        video: videoUploadResponse.publicUrl,
-        pdf: pdfUploadResponse.publicUrl,
-        slug: slugCourse,
-      })
-  
-      res.status(200).json({
-        status: 'OK',
-        message: 'Success update course',
-        data: [course],
-      });
     } catch (error) {
       console.log(error)
       if (error.name === 'SequelizeUniqueConstraintError') {
@@ -189,12 +203,9 @@ class CourseController extends ApplicationController {
   getCourseBySlug = async (req, res) => {
     try {
       const { slug } = req.params
-      console.log('slug: ', slug)
       const course = await this.courseModel.findOne({
         where: { slug }
       })
-
-      console.log('course slug', course)
 
       if (!course) {
         return res.status(404).json({ error: 'Course not found' });

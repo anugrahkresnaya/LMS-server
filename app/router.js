@@ -85,7 +85,7 @@ function apply(app) {
   app.post('/course/:id/create-course', upload.any(), authenticationController.authorize(), courseController.createCourse)
   app.get('/course/id/:id', courseController.getCourseById)
   app.get('/course/:slug', courseController.getCourseBySlug)
-  app.put('/course/update/:slug', upload.any(), courseController.handleUpdateCourse)
+  app.put('/course/update/:slug', upload.any(), authenticationController.authorize(), courseController.handleUpdateCourse)
   app.get('/courses', courseController.getCourseList)
   app.post('/courses/list/byId', courseController.getCourseListById)
   app.get('/courses/:instructorId', authenticationController.authorize(), courseController.getCourseListByInstructorId)
