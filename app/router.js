@@ -79,7 +79,7 @@ function apply(app) {
   )
   app.get('/user', authenticationController.handleGetUser)
   app.get('/user/:id', authenticationController.handleGetUserById)
-  app.put("/user/update/:id", authenticationController.handleUpdateUser)
+  app.put("/user/update/:id", authenticationController.authorize(), authenticationController.handleUpdateUser)
   app.delete('/user/delete/:id', authenticationController.authorize(accessControl.ADMIN), authenticationController.handleDeleteUser)
 
   app.post('/course/:id/create-course', upload.any(), authenticationController.authorize(), courseController.createCourse)
@@ -92,16 +92,13 @@ function apply(app) {
   app.delete('/course/delete/:id', authenticationController.authorize(), courseController.handleDeleteCourse)
   app.get('/searchCourses', courseController.handleSearchCourse)
 
-  // app.get('/check', transactionController.handleCheckout)
-  app.post('/course/:id/order', transactionController.handleCheckout)
-  // app.post('/courseFree/:id/order', transactionController.handleCheckoutFree)
+  app.post('/course/:id/order', authenticationController.authorize(accessControl.USER), transactionController.handleCheckout)
   app.post('/payment/updateStatus', transactionController.handleAfterPayment)
   app.post('/access', transactionController.getOrderByCourseId)
   app.post('/getCourseBySettlement', transactionController.getOrderBySettlement)
-  // app.get('/orderId', transactionController.getOrderByOrderId)
   app.get('/orders', transactionController.handleOrderList)
 
-  app.post('/comment/:courseSlug', commentController.handleCreateComment)
+  app.post('/comment/:courseSlug', authenticationController.authorize(), commentController.handleCreateComment)
   app.get('/comments/:courseSlug', commentController.handleGetComments)
   app.delete('/comment/:id', commentController.handleDeleteComment)
 

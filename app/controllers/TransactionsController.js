@@ -91,45 +91,7 @@ class TransactionsController {
     }
   }
 
-  // handleCheckoutFree = async (req, res) => {
-  //   try {
-  //     const { id } = req.params
-  //     const { userId, instructorId, slug } = req.body
-  //     const course = await this.courseModel.findByPk(id)
-
-  //     if (!course) {
-  //       res.status(404).json({ error: 'Course not found.' });
-  //       return;
-  //     }
-
-  //     const order = await this.orderModel.create({
-  //       courseId: course.id,
-  //       transactionId: `ORDER-${course.id}-${Date.now()}`,
-  //       amount: 0,
-  //       userId,
-  //       instructorId,
-  //       slug,
-  //       status: 'settlement'
-  //     })
-
-  //     res.status(201).json({
-  //       status: "OK",
-  //       message: "Order success",
-  //       data: order
-  //     })
-  //   } catch (error) {
-  //     console.log(error)
-  //     res.status(500).json({
-  //       status: 'Fail',
-  //       message: error.message
-  //     })
-  //   }
-  // }
-
   handleAfterPayment = async (req, res) => {
-    // const order_id = req.query.order_id
-    // const transaction_status = req.query.transaction_status
-
     const { order_id, transaction_status } = req.body
 
     try {
@@ -242,32 +204,6 @@ class TransactionsController {
       })
     }
   }
-
-  // getOrderByOrderId = async (req, res) => {
-  //   try {
-  //     const { order_id } = req.body
-
-  //     console.log(order_id)
-
-  //     const order = await this.orderModel.findOne({
-  //       where: {
-  //         transactionId: order_id
-  //       }
-  //     })
-
-  //     res.status(200).json({
-  //       status: "OK",
-  //       message: "Get order by id success",
-  //       data: order
-  //     })
-  //   } catch (error) {
-  //     console.log(error)
-  //     res.status(500).json({
-  //       status: 'Fail',
-  //       message: error.message
-  //     })
-  //   }
-  // }
 }
 
 module.exports = TransactionsController
