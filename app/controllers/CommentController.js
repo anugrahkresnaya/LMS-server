@@ -59,6 +59,31 @@ class CommentController {
     }
   }
 
+  handleGetCommentList = async (req, res) => {
+    try {
+      const comments = await this.commentModel.findAll()
+
+      if(!comments) {
+        res.status(404).json({
+          status: "Fail",
+          message: "No comment has found"
+        })
+      }
+
+      res.status(200).json({
+        status: "OK",
+        message: "Comment list successfully retrieved",
+        data: comments
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        status: 'Fail',
+        message: error.message,
+      })
+    }
+  }
+
   handleDeleteComment = async (req, res) => {
     try {
       const { id } = req.params
