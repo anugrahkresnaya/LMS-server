@@ -141,7 +141,7 @@ function apply(app) {
   app.get('/comments/:courseSlug', commentController.handleGetComments)
   app.get('/commentList', commentController.handleGetCommentList)
   app.delete(
-    '/comment/:id',
+    '/comment/delete/:id',
     authenticationController.authorize(accessControl.ADMIN),
     commentController.handleDeleteComment
   )
