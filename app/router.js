@@ -79,28 +79,72 @@ function apply(app) {
   )
   app.get('/user', authenticationController.handleGetUser)
   app.get('/user/:id', authenticationController.handleGetUserById)
-  app.put("/user/update/:id", authenticationController.authorize(), authenticationController.handleUpdateUser)
-  app.delete('/user/delete/:id', authenticationController.authorize(accessControl.ADMIN), authenticationController.handleDeleteUser)
+  app.put(
+    "/user/update/:id",
+    authenticationController.authorize(),
+    authenticationController.handleUpdateUser
+  )
+  app.delete(
+    '/user/delete/:id',
+    authenticationController.authorize(accessControl.ADMIN),
+    authenticationController.handleDeleteUser
+  )
 
-  app.post('/course/:id/create-course', upload.any(), authenticationController.authorize(), courseController.createCourse)
+  app.post(
+    '/course/:id/create-course',
+    upload.any(),
+    authenticationController.authorize(),
+    courseController.createCourse
+  )
   app.get('/course/id/:id', courseController.getCourseById)
   app.get('/course/:slug', courseController.getCourseBySlug)
-  app.put('/course/update/:slug', upload.any(), authenticationController.authorize(), courseController.handleUpdateCourse)
+  app.put(
+    '/course/update/:slug',
+    upload.any(),
+    authenticationController.authorize(),
+    courseController.handleUpdateCourse
+  )
   app.get('/courses', courseController.getCourseList)
   app.post('/courses/list/byId', courseController.getCourseListById)
-  app.get('/courses/:instructorId', authenticationController.authorize(), courseController.getCourseListByInstructorId)
-  app.delete('/course/delete/:id', authenticationController.authorize(), courseController.handleDeleteCourse)
+  app.get(
+    '/courses/:instructorId',
+    authenticationController.authorize(),
+    courseController.getCourseListByInstructorId
+  )
+  app.delete(
+    '/course/delete/:id',
+    authenticationController.authorize(),
+    courseController.handleDeleteCourse
+  )
   app.get('/searchCourses', courseController.handleSearchCourse)
 
-  app.post('/course/:id/order', authenticationController.authorize(accessControl.USER), transactionController.handleCheckout)
+  app.post(
+    '/course/:id/order',
+    authenticationController.authorize(accessControl.USER),
+    transactionController.handleCheckout
+  )
   app.post('/payment/updateStatus', transactionController.handleAfterPayment)
   app.post('/access', transactionController.getOrderByCourseId)
   app.post('/getCourseBySettlement', transactionController.getOrderBySettlement)
   app.get('/orders', transactionController.handleOrderList)
+  app.delete(
+    '/order/delete/:id',
+    authenticationController.authorize(accessControl.ADMIN),
+    transactionController.handleDeleteOrder
+  )
 
-  app.post('/comment/:courseSlug', authenticationController.authorize(), commentController.handleCreateComment)
+  app.post(
+    '/comment/:courseSlug',
+    authenticationController.authorize(),
+    commentController.handleCreateComment
+  )
   app.get('/comments/:courseSlug', commentController.handleGetComments)
-  app.delete('/comment/:id', commentController.handleDeleteComment)
+  app.get('/commentList', commentController.handleGetCommentList)
+  app.delete(
+    '/comment/:id',
+    authenticationController.authorize(accessControl.ADMIN),
+    commentController.handleDeleteComment
+  )
 
   app.post(
     '/rating/:courseSlug',
@@ -111,6 +155,11 @@ function apply(app) {
   app.get(
     '/ratingsBySlug/:courseSlug',
     ratingController.handleGetRatingByCourseSlug
+  )
+  app.delete(
+    '/rating/delete/:id',
+    authenticationController.authorize(accessControl.ADMIN),
+    ratingController.handleDeleteRating
   )
 
   return app

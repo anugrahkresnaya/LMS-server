@@ -90,7 +90,7 @@ class RatingController {
       res.status(200).json({
         status: "OK",
         message: "Rating list successfully retrieved",
-        data: [ratings]
+        data: ratings
       })
     } catch (error) {
       console.log(error)
