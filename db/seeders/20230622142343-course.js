@@ -43,7 +43,20 @@ module.exports = {
           paid: true,
           createdAt: timestamp,
           updatedAt: timestamp
-        }
+        },
+        {
+          title: 'Assessment Disposal by Golder',
+          slug: 'assessment-disposal-by-golder',
+          description: '',
+          price: 66666,
+          image: '',
+          video: null,
+          pdf: 'https://storage.googleapis.com/oceanz-bucket/1690057914094_final-report-basic-engineering-waste-dump-.pdf',
+          instructorId: 4,
+          paid: false,
+          createdAt: timestamp,
+          updatedAt: timestamp
+        },
       ],
       {}
     )

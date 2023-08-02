@@ -53,6 +53,19 @@ module.exports = {
           roleId: role.id,
           createdAt: timestamp,
           updatedAt: timestamp,
+        },
+        {
+          firstName: 'Night',
+          lastName: 'Ouroboros',
+          email: 'nightouroboros@gmail.com',
+          encryptedPassword,
+          gender: 'male',
+          photoProfile: '',
+          dateOfBirth: '2001-12-17 07:00:00.000 +0700',
+          phoneNumber: '087771232121',
+          roleId: role.id,
+          createdAt: timestamp,
+          updatedAt: timestamp,
         }
       ],
       {}
