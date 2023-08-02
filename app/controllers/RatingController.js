@@ -24,10 +24,7 @@ class RatingController {
       }
 
       const rating = await this.ratingModel.create({
-        userId: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        photoProfile: user.photoProfile,
+        userData: {user},
         value,
         review,
         courseSlug

@@ -9,22 +9,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: {
-        type: Sequelize.INTEGER,
-      },
-      firstName: {
-        type: Sequelize.STRING
-      },
-      lastName: {
-        type: Sequelize.STRING
+      userData: {
+        type: Sequelize.JSONB
       },
       comment: {
         type: Sequelize.TEXT
       },
       courseSlug: {
-        type: Sequelize.STRING
-      },
-      image: {
         type: Sequelize.STRING
       },
       createdAt: {

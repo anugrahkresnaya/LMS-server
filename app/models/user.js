@@ -19,7 +19,11 @@ module.exports = (sequelize, DataTypes) => {
       })
 
       this.hasMany(models.Rating, {
-        foreignKey: 'userId'
+        foreignKey: 'userData'
+      })
+
+      this.hasMany(models.Comment, {
+        foreignKey: 'userData'
       })
     }
   }
