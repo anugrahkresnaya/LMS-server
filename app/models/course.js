@@ -24,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     image: DataTypes.STRING,
     video: DataTypes.STRING,
     pdf: DataTypes.STRING,
-    published: DataTypes.BOOLEAN,
     instructorId: DataTypes.INTEGER,
     paid: DataTypes.BOOLEAN,
   }, {
