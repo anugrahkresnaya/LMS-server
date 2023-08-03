@@ -25,7 +25,7 @@ module.exports = {
           price: 0,
           image: 'https://storage.googleapis.com/oceanz-bucket/1687667361654_course.jpg',
           video: 'https://storage.googleapis.com/oceanz-bucket/1687616319884_bali-ads.mp4',
-          pdf: 'https://storage.googleapis.com/oceanz-bucket/1687616342915_gk2.pdf',
+          pdf: 'https://storage.googleapis.com/oceanz-bucket/1689850073269_materi-ajar-anugrah-kresnaya.pdf',
           instructorId: 3,
           paid: false,
           createdAt: timestamp,
@@ -43,7 +43,20 @@ module.exports = {
           paid: true,
           createdAt: timestamp,
           updatedAt: timestamp
-        }
+        },
+        {
+          title: 'Assessment Disposal by Golder',
+          slug: 'assessment-disposal-by-golder',
+          description: '',
+          price: 66666,
+          image: '',
+          video: null,
+          pdf: 'https://storage.googleapis.com/oceanz-bucket/1690057914094_final-report-basic-engineering-waste-dump-.pdf',
+          instructorId: 4,
+          paid: true,
+          createdAt: timestamp,
+          updatedAt: timestamp
+        },
       ],
       {}
     )

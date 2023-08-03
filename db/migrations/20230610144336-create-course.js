@@ -32,10 +32,6 @@ module.exports = {
       pdf: {
         type: Sequelize.STRING
       },
-      published: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-      },
       instructorId: {
         type: Sequelize.INTEGER
       },

@@ -9,20 +9,31 @@ class CommentController {
     try {
       const { courseSlug } = req.params
       const { 
-        firstName,
-        lastName,
         userId,
         comment_content,
-        image
       } = req.body
 
+      const user = await this.userModel.findByPk(userId)
+      const firstName = user.firstName
+      const lastName = user.lastName
+      const photoProfile = user.photoProfile
+
+      if(!user) {
+        res.status(404).json({
+          status: "Fail",
+          message: "User not found or not login"
+        })
+      }
+
       const comment = await this.commentModel.create({
-        courseSlug,
-        firstName,
-        lastName,
-        userId,
-        image,
-        comment: comment_content
+        userData: {
+          id: userId,
+          firstName,
+          lastName,
+          photoProfile
+        },
+        comment: comment_content,
+        courseSlug
       })
 
       res.status(201).json({

@@ -9,20 +9,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      courseId: {
-        type: Sequelize.INTEGER
+      courseData: {
+        type: Sequelize.JSONB
       },
-      userId: {
-        type: Sequelize.INTEGER
-      },
-      instructorId: {
-        type: Sequelize.INTEGER
-      },
-      slug: {
-        type: Sequelize.STRING
-      },
-      amount: {
-        type: Sequelize.INTEGER
+      userData: {
+        type: Sequelize.JSONB
       },
       transactionId: {
         type: Sequelize.STRING
