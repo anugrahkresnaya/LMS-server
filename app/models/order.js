@@ -12,28 +12,25 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Course, {
-        foreignKey: 'courseId'
+        foreignKey: 'courseData'
       })
 
       this.belongsTo(models.User, {
-        foreignKey: 'userId'
+        foreignKey: 'userData'
       })
 
-      this.belongsTo(models.User, {
-        foreignKey: 'instructorId'
-      })
+      // this.belongsTo(models.User, {
+      //   foreignKey: 'instructorId'
+      // })
 
-      this.belongsTo(models.Course, {
-        foreignKey: 'amount'
-      })
+      // this.belongsTo(models.Course, {
+      //   foreignKey: 'amount'
+      // })
     }
   }
   Order.init({
-    courseId: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER,
-    instructorId: DataTypes.INTEGER,
-    slug: DataTypes.STRING,
-    amount: DataTypes.INTEGER,
+    courseData: DataTypes.JSONB,
+    userData: DataTypes.JSONB,
     transactionId: DataTypes.STRING,
     status: DataTypes.STRING,
     token: DataTypes.STRING,

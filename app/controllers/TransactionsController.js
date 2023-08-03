@@ -11,26 +11,37 @@ class TransactionsController {
   handleCheckout = async (req, res) => {
     try {
       const { id } = req.params
-      const { userId, instructorId, slug } = req.body
+      const { userId } = req.body
+
       const course = await this.courseModel.findByPk(id)
+      const instructorId = course.instructorId
+      const courseId = course.id
+      const price = course.price
 
       const customer = await this.userModel.findByPk(userId)
 
-      console.log('course data', course)
+      const customerId = customer.id
+      const firstName = customer.firstName
+      const lastName = customer.lastName
 
       if (!course) {
         res.status(404).json({ error: 'Course not found.' });
         return;
       }
 
+      if(!customer) {
+        res.status(404).json({
+          status: "Fail",
+          message: "User not found or not login"
+        })
+      }
+
       if(course.paid === false) {
         const order = await this.orderModel.create({
-          courseId: course.id,
+          courseData: {courseId, instructorId, price},
           transactionId: `ORDER-${course.id}-${Date.now()}`,
           amount: 0,
-          userId,
-          instructorId,
-          slug,
+          userData: {customerId},
           status: 'settlement'
         })
   
@@ -57,8 +68,6 @@ class TransactionsController {
         const transactionOptions = {
           // Set callback URLs for success, failure, and pending payments
           successRedirectUrl: 'https://oceanz.vercel.app/payment',
-          // failureRedirectUrl: 'http://your-website.com/failure',
-          // pendingRedirectUrl: 'http://your-website.com/pending',
         } 
 
         const transactionToken = await snap.createTransaction(parameter, transactionOptions)
@@ -66,12 +75,9 @@ class TransactionsController {
         console.log('transaction', transactionToken)
 
         const order = await this.orderModel.create({
-          courseId: course.id,
+          courseData: {courseId, instructorId, price},
           transactionId: parameter.transaction_details.order_id,
-          amount: parameter.transaction_details.gross_amount,
-          userId,
-          instructorId,
-          slug,
+          userData: {customerId},
           token: transactionToken.token,
           redirectUrl: transactionToken.redirect_url
         })
@@ -150,12 +156,14 @@ class TransactionsController {
     try {
       const { courseId, userId, status } = req.body
 
-      console.log('id', courseId)
-
       const order = await this.orderModel.findOne({
         where: {
-          courseId,
-          userId,
+          userData: {
+            customerId: userId,
+          },
+          courseData: {
+            courseId: courseId
+          },
           status
         }
       })

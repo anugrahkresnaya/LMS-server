@@ -25,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Comment, {
         foreignKey: 'userData'
       })
+
+      this.hasMany(models.Order, {
+        foreignKey: 'userData'
+      })
     }
   }
   User.init({

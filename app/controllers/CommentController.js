@@ -14,6 +14,9 @@ class CommentController {
       } = req.body
 
       const user = await this.userModel.findByPk(userId)
+      const firstName = user.firstName
+      const lastName = user.lastName
+      const photoProfile = user.photoProfile
 
       if(!user) {
         res.status(404).json({
@@ -23,7 +26,12 @@ class CommentController {
       }
 
       const comment = await this.commentModel.create({
-        userData: {user},
+        userData: {
+          id: userId,
+          firstName,
+          lastName,
+          photoProfile
+        },
         comment: comment_content,
         courseSlug
       })

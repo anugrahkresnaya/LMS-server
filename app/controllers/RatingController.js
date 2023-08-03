@@ -15,6 +15,9 @@ class RatingController {
       } = req.body
 
       const user = await this.userModel.findByPk(userId)
+      const firstName = user.firstName
+      const lastName = user.lastName
+      const photoProfile = user.photoProfile
 
       if(!user) {
         res.status(404).json({
@@ -24,7 +27,12 @@ class RatingController {
       }
 
       const rating = await this.ratingModel.create({
-        userData: {user},
+        userData: {
+          id: userId,
+          firstName,
+          lastName,
+          photoProfile
+        },
         value,
         review,
         courseSlug
