@@ -17,12 +17,11 @@ class TransactionsController {
       const instructorId = course.instructorId
       const courseId = course.id
       const price = course.price
+      const slug = course.slug
 
       const customer = await this.userModel.findByPk(userId)
 
       const customerId = customer.id
-      const firstName = customer.firstName
-      const lastName = customer.lastName
 
       if (!course) {
         res.status(404).json({ error: 'Course not found.' });
@@ -38,7 +37,7 @@ class TransactionsController {
 
       if(course.paid === false) {
         const order = await this.orderModel.create({
-          courseData: {courseId, instructorId, price},
+          courseData: {courseId, instructorId, price, slug},
           transactionId: `ORDER-${course.id}-${Date.now()}`,
           amount: 0,
           userData: {customerId},
@@ -75,7 +74,7 @@ class TransactionsController {
         console.log('transaction', transactionToken)
 
         const order = await this.orderModel.create({
-          courseData: {courseId, instructorId, price},
+          courseData: {courseId, instructorId, price, slug},
           transactionId: parameter.transaction_details.order_id,
           userData: {customerId},
           token: transactionToken.token,
@@ -195,7 +194,9 @@ class TransactionsController {
 
       const order = await this.orderModel.findAll({
         where: {
-          userId,
+          userData: {
+            customerId: userId
+          },
           status: 'settlement'
         }
       })
