@@ -207,7 +207,7 @@ class AuthenticationController extends ApplicationController {
         from: 'oceanzplatform@gmail.com',
         to: email,
         subject: 'Reset Password',
-        text: `You received this email because you or someone requested a password reset. Click the following link to reset your password: https://oceanz.vercel.app/reset-password/${resetToken}`,
+        text: `You received this email because you or someone requested a password reset. Click the following link to reset your password: http://localhost:3000/reset-password/${resetToken}`,
       }
 
       await transporter.sendMail(mailOptions)
@@ -238,6 +238,15 @@ class AuthenticationController extends ApplicationController {
       const user = await this.userModel.findOne({ where: { email } })
       if (!user) {
         return res.status(404).json({ message: 'User tidak ditemukan' });
+      }
+
+      const passwordLength = password.length >= 6
+      if (!passwordLength) {
+        const err = new ApiError(
+          httpStatus.BAD_REQUEST,
+          'password at least have 6 characters or more'
+        )
+        res.status(422).json(err)
       }
 
       user.encryptedPassword = this.encryptPassword(password);
