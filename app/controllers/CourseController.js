@@ -56,7 +56,7 @@ class CourseController extends ApplicationController {
         }
       }
 
-      if ((!videoFile && pdfFile) || (videoFile && !pdfFile)) {
+      if ((!videoFile && pdfFile) || (videoFile && !pdfFile) || (videoFile && pdfFile)) {
         const imageUploadResponse = imageFile ? await uploadFile(imageFile) : undefined
 
         const videoUploadResponse = videoFile ? await uploadFile(videoFile) : undefined
@@ -84,16 +84,19 @@ class CourseController extends ApplicationController {
           message: 'Success create course',
           data: [course],
         });
+      } else if (!title) {
+        res.status(400).json({ message: 'You have to provide title' })
+        return
       } else {
-        res.status(400).json({ message: 'You have to provide video or pdf' })
+        res.status(400).json({ message: 'You have to provide video or pdf or both' })
         return
       }
     } catch (error) {
       if (error.name === 'SequelizeUniqueConstraintError') {
-        res.status(400).json({ error: 'Course with the same title already exists.' });
+        res.status(400).json({ message: 'Course with the same title already exists.' });
       } else {
         console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error' });
       }
     }
   }
@@ -177,10 +180,10 @@ class CourseController extends ApplicationController {
     } catch (error) {
       console.log(error)
       if (error.name === 'SequelizeUniqueConstraintError') {
-        res.status(400).json({ error: 'Course with the same title already exists.' });
+        res.status(400).json({ message: 'Course with the same title already exists.' });
       } else {
         console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error' });
       }
     }
   }
