@@ -240,6 +240,15 @@ class AuthenticationController extends ApplicationController {
         return res.status(404).json({ message: 'User tidak ditemukan' });
       }
 
+      const passwordLength = password.length >= 6
+      if (!passwordLength) {
+        const err = new ApiError(
+          httpStatus.BAD_REQUEST,
+          'password at least have 6 characters or more'
+        )
+        res.status(422).json(err)
+      }
+
       user.encryptedPassword = this.encryptPassword(password);
       await user.save();
 
